@@ -7,6 +7,8 @@
 > Proyecto de Fin de Grado — Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Multiplataforma (2º Curso)
 >
 > **Autor:** Jesús Delgado Sánchez
+>
+> **Análisis del código más relevante:** https://jdelsan275.github.io/jPOS/
 
 </div>
 
@@ -75,7 +77,7 @@ El sistema se compone de **dos proyectos independientes** que trabajan en conjun
 | Internacionalización | ngx-translate | 16.x | Carga archivos `es.json` / `en.json` y sustituye claves en tiempo de ejecución |
 | Gráficos | Chart.js / ng2-charts | 4.x / 10.x | Gráficos interactivos (dona y líneas) en reportes e inicio del dashboard |
 | Generación de QR | angularx-qrcode | 21.x | Genera el QR de cada mesa codificando la URL pública del menú del cliente |
-| Programación reactiva | RxJS | 7.x | Los servicios devuelven `Observable`s; los WebSockets se consumen como streams reactivos |
+| Programación reactiva | RxJS | 7.x | Los servicios devuelven `Observables`; los WebSockets se consumen como streams reactivos |
 
 ***
 
