@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jPOS — Código del Proyecto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg2: #0f1420;
+    --bg3: #141927;
+    --card: #111827;
+    --border: #1e2840;
+    --border2: #253050;
+    --accent: #3b7cf4;
+    --accent2: #60a5fa;
+    --accent-dim: rgba(59,124,244,0.12);
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.1);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251,191,36,0.1);
+    --coral: #f87171;
+    --coral-dim: rgba(248,113,113,0.1);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #4b5563;
+    --radius: 12px;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-code: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── FONDO con malla de puntos ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #1e2840 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 80px 24px 64px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(59,124,244,0.25);
+    color: var(--accent2);
+    font-family: var(--font-code);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-badge span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #e2e8f0 30%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--text2);
+    font-size: 17px;
+    max-width: 560px;
+    margin: 0 auto 36px;
+    font-weight: 300;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .tag {
+    font-family: var(--font-code);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    background: var(--bg3);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,13,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 52px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-link {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text3);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: all 0.18s;
+    letter-spacing: 0.03em;
+  }
+
+  .nav-link:hover { color: var(--text2); background: var(--bg3); }
+  .nav-link.active { color: var(--accent2); background: var(--accent-dim); }
+
+  /* ── LAYOUT PRINCIPAL ── */
+  .main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── SECCIÓN ── */
+  .section {
+    margin-bottom: 80px;
+    scroll-margin-top: 72px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .section-icon.blue  { background: var(--accent-dim); }
+  .section-icon.green { background: var(--green-dim); }
+  .section-icon.amber { background: var(--amber-dim); }
+  .section-icon.coral { background: var(--coral-dim); }
+  .section-icon.purple{ background: var(--purple-dim); }
+
+  .section-title {
+    font-family: var(--font-head);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--font-code);
+    margin-top: 2px;
+  }
+
+  /* ── CODE CARD ── */
+  .code-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .code-card:hover { border-color: var(--border2); }
+
+  .code-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+    gap: 12px;
+  }
+
+  .code-card-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .dots { display: flex; gap: 5px; flex-shrink: 0; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #ffbd2e; }
+  .dot.g { background: #28c840; }
+
+  .filename {
+    font-family: var(--font-code);
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .code-badge {
+    font-family: var(--font-code);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .code-badge.ts   { background: #1a3a5c; color: #60a5fa; border: 1px solid #1e4a7a; }
+  .code-badge.back { background: #1a3320; color: #34d399; border: 1px solid #1e4a2a; }
+  .code-badge.front{ background: #2a1a3a; color: #a78bfa; border: 1px solid #3a2a5a; }
+
+  .code-body {
+    padding: 20px 22px;
+    overflow-x: auto;
+  }
+
+  pre {
+    font-family: var(--font-code);
+    font-size: 13px;
+    line-height: 1.75;
+    color: #cdd9f0;
+    white-space: pre;
+    margin: 0;
+  }
+
+  /* Highlight manual de sintaxis */
+  .kw   { color: #c792ea; }   /* keywords */
+  .fn   { color: #82aaff; }   /* funciones */
+  .dec  { color: #f78c6c; }   /* decoradores */
+  .str  { color: #c3e88d; }   /* strings */
+  .num  { color: #f78c6c; }   /* números */
+  .cmt  { color: #546e7a; font-style: italic; }  /* comentarios */
+  .cls  { color: #ffcb6b; }   /* clases/tipos */
+  .prop { color: #80cbc4; }   /* propiedades */
+  .op   { color: #89ddff; }   /* operadores */
+  .pun  { color: #89ddff; }   /* puntuación */
+  .var  { color: #eeffff; }   /* variables */
+
+  /* ── EXPLICACIÓN ── */
+  .explain {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+
+  .explain.green  { border-left-color: var(--green); }
+  .explain.amber  { border-left-color: var(--amber); }
+  .explain.coral  { border-left-color: var(--coral); }
+  .explain.purple { border-left-color: var(--purple); }
+
+  .explain p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .explain strong { color: var(--text); font-weight: 500; }
+
+  .explain ul {
+    list-style: none;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .explain ul li {
+    font-size: 13px;
+    color: var(--text2);
+    padding-left: 16px;
+    position: relative;
+    font-weight: 300;
+  }
+
+  .explain ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+  }
+
+  .explain.green ul li::before { color: var(--green); }
+  .explain.amber ul li::before { color: var(--amber); }
+  .explain.coral ul li::before { color: var(--coral); }
+  .explain.purple ul li::before { color: var(--purple); }
+
+  /* ── GRID 2 columnas ── */
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* ── FLOW DIAGRAM (WebSocket) ── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 24px;
+  }
+
+  .flow-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 140px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .flow-row:last-child { border-bottom: none; }
+
+  .flow-actor {
+    font-family: var(--font-code);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .flow-actor.client  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+  .flow-actor.server  { background: var(--accent-dim); color: var(--accent2); border: 1px solid rgba(59,124,244,0.2); }
+  .flow-actor.kitchen { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+  .flow-actor.all     { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+  .flow-actor.empty   { background: transparent; }
+
+  .flow-event {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .flow-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border2);
+    position: relative;
+  }
+
+  .flow-arrow-head { color: var(--text3); font-size: 12px; }
+
+  .flow-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.03em;
+  }
+
+  .flow-desc {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 13px;
+    font-family: var(--font-code);
+  }
+
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#ws"    class="nav-link active">WebSocket Gateway</a>
+    <a href="#auth"  class="nav-link">Autenticación</a>
+    <a href="#prisma"class="nav-link">Prisma / Pedidos</a>
+    <a href="#socket-front" class="nav-link">Socket Frontend</a>
+    <a href="#guards"class="nav-link">Guards & Rutas</a>
+    <a href="#interceptor" class="nav-link">Interceptor HTTP</a>
+    <a href="#mesas" class="nav-link">Componente Mesas</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge"><span></span> Proyecto Fin de Grado — DAM 2º Curso</div>
+  <h1>jPOS<br><em>Código del proyecto</em></h1>
+  <p>Análisis del código más relevante del sistema. Backend con NestJS + Prisma, frontend con Angular 21.</p>
+  <div class="hero-tags">
+    <span class="tag">NestJS 11</span>
+    <span class="tag">Angular 21</span>
+    <span class="tag">Prisma ORM</span>
+    <span class="tag">Socket.IO</span>
+    <span class="tag">PostgreSQL</span>
+    <span class="tag">JWT</span>
+    <span class="tag">TailwindCSS</span>
+    <span class="tag">TypeScript</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ══════════════════════════════════════════════
+       1. WEBSOCKET GATEWAY
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="ws">
+    <div class="section-header">
+      <div class="section-icon blue">⚡</div>
+      <div>
+        <div class="section-title">WebSocket Gateway</div>
+        <div class="section-sub">back/src/pedidos/pedidos.gateway.ts</div>
+      </div>
+    </div>
+
+    <div class="explain">
+      <p>El <strong>WebSocket Gateway</strong> es el corazón del sistema en tiempo real. Implementa dos interfaces de NestJS (<code>OnGatewayConnection</code> y <code>OnGatewayDisconnect</code>) para detectar cuando un dispositivo se conecta o desconecta, y expone múltiples <strong>manejadores de eventos</strong> mediante el decorador <code>@SubscribeMessage</code>. Cada evento que llega desde cualquier pantalla (cliente, camarero, cocina) se procesa aquí y se reemite al resto.</p>
+      <ul>
+        <li>Cuando el cliente envía <code>enviar_comanda</code>, el servidor persiste el pedido en BD y lo reemite a la sala <strong>cocina</strong> y a todos los dispositivos.</li>
+        <li>Las salas de Socket.IO (<code>unirse_sala</code>) filtran qué eventos recibe cada pantalla, evitando ruido innecesario.</li>
+        <li>El evento <code>solicitar_cuenta</code> persiste el cambio en BD antes de emitirlo, garantizando consistencia si algún cliente se desconecta.</li>
+      </ul>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="code-card-left">
+          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="filename">pedidos.gateway.ts — Clase principal y conexiones</span>
+        </div>
+        <span class="code-badge back">BACKEND</span>
+      </div>
+      <div class="code-body"><pre><span class="dec">@WebSocketGateway</span><span class="pun">({</span> <span class="prop">cors</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">origin</span><span class="pun">:</span> <span class="str">'*'</span> <span class="pun">}</span> <span class="pun">})</span>
+<span class="kw">export class</span> <span class="cls">PedidosGateway</span> <span class="kw">implements</span> <span class="cls">OnGatewayConnection</span><span class="pun">,</span> <span class="cls">OnGatewayDisconnect</span> <span class="pun">{</span>
+  <span class="dec">@WebSocketServer</span><span class="pun">()</span> <span class="prop">server</span><span class="pun">:</span> <span class="cls">Server</span><span class="pun">;</span>
+
+  <span class="fn">handleConnection</span><span class="pun">(</span><span class="var">client</span><span class="pun">:</span> <span class="cls">Socket</span><span class="pun">)</span> <span class="pun">{</span>
+    <span class="var">console</span><span class="pun">.</span><span class="fn">log</span><span class="pun">(</span><span class="str">`🟢 Cliente conectado: <span class="pun">${</span><span class="var">client</span><span class="pun">.</span><span class="prop">id</span><span class="pun">}</span>`</span><span class="pun">);</span>
+  <span class="pun">}</span>
+
+  <span class="dec">@SubscribeMessage</span><span class="pun">(</span><span class="str">'unirse_sala'</span><span class="pun">)</span>
+  <span class="fn">handleUnirseSala</span><span class="pun">(</span>
+    <span class="dec">@ConnectedSocket</span><span class="pun">()</span> <span class="var">client</span><span class="pun">:</span> <span class="cls">Socket</span><span class="pun">,</span>
+    <span class="dec">@MessageBody</span><span class="pun">()</span> <span class="var">sala</span><span class="pun">:</span> <span class="cls">string</span>
+  <span class="pun">)</span> <span class="pun">{</span>
+    <span class="var">client</span><span class="pun">.</span><span class="fn">join</span><span class="pun">(</span><span class="var">sala</span><span class="pun">);</span> <span class="cmt">// Une al cliente a una sala (ej: 'cocina', 'mesa-1')</span>
+    <span class="kw">return</span> <span class="pun">{</span> <span class="prop">evento</span><span class="pun">:</span> <span class="str">'sala_unida'</span><span class="pun">,</span> <span class="prop">mensaje</span><span class="pun">:</span> <span class="str">`Unido a <span class="pun">${</span><span class="var">sala</span><span class="pun">}</span>`</span> <span class="pun">};</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre></div>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="code-card-left">
+          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="filename">pedidos.gateway.ts — Envío de comanda en tiempo real</span>
+        </div>
+        <span class="code-badge back">BACKEND</span>
+      </div>
+      <div class="code-body"><pre><span class="dec">@SubscribeMessage</span><span class="pun">(</span><span class="str">'enviar_comanda'</span><span class="pun">)</span>
+<span class="kw">async</span> <span class="fn">handleEnviarComanda</span><span class="pun">(</span>
+  <span class="dec">@ConnectedSocket</span><span class="pun">()</span> <span class="var">client</span><span class="pun">:</span> <span class="cls">Socket</span><span class="pun">,</span>
+  <span class="dec">@MessageBody</span><span class="pun">()</span> <span class="var">payload</span><span class="pun">:</span> <span class="kw">any</span>
+<span class="pun">)</span> <span class="pun">{</span>
+  <span class="kw">try</span> <span class="pun">{</span>
+    <span class="cmt">// 1. Persistir en base de datos (crea o acumula al pedido activo)</span>
+    <span class="kw">const</span> <span class="var">pedidoActivo</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">pedidosService</span>
+      <span class="pun">.</span><span class="fn">crearOActualizarPedido</span><span class="pun">(</span><span class="var">payload</span><span class="pun">);</span>
+
+    <span class="cmt">// 2. Emitir solo a la sala de cocina</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="prop">server</span><span class="pun">.</span><span class="fn">to</span><span class="pun">(</span><span class="str">'cocina'</span><span class="pun">).</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'nuevo_pedido_cocina'</span><span class="pun">,</span> <span class="var">pedidoActivo</span><span class="pun">);</span>
+
+    <span class="cmt">// 3. Notificar a todas las pantallas del cambio de estado</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="prop">server</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'pedido_actualizado'</span><span class="pun">,</span> <span class="var">pedidoActivo</span><span class="pun">);</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="prop">server</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'mesas_actualizadas'</span><span class="pun">);</span>
+
+    <span class="kw">return</span> <span class="pun">{</span> <span class="prop">status</span><span class="pun">:</span> <span class="str">'ok'</span><span class="pun">,</span> <span class="prop">pedido</span><span class="pun">:</span> <span class="var">pedidoActivo</span> <span class="pun">};</span>
+  <span class="pun">}</span> <span class="kw">catch</span> <span class="pun">(</span><span class="var">error</span><span class="pun">)</span> <span class="pun">{</span>
+    <span class="kw">return</span> <span class="pun">{</span> <span class="prop">status</span><span class="pun">:</span> <span class="str">'error'</span><span class="pun">,</span> <span class="prop">mensaje</span><span class="pun">:</span> <span class="str">'No se pudo procesar el pedido'</span> <span class="pun">};</span>
+  <span class="pun">}</span>
+<span class="pun">}</span>
+
+<span class="dec">@SubscribeMessage</span><span class="pun">(</span><span class="str">'solicitar_cuenta'</span><span class="pun">)</span>
+<span class="kw">async</span> <span class="fn">handleSolicitarCuenta</span><span class="pun">(</span><span class="dec">@MessageBody</span><span class="pun">()</span> <span class="var">mesaId</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">)</span> <span class="pun">{</span>
+  <span class="cmt">// Persistir en BD antes de emitir: garantiza consistencia ante desconexiones</span>
+  <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">mesa</span><span class="pun">.</span><span class="fn">update</span><span class="pun">({</span>
+    <span class="prop">where</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">id</span><span class="pun">:</span> <span class="var">mesaId</span> <span class="pun">},</span>
+    <span class="prop">data</span><span class="pun">:</span>  <span class="pun">{</span> <span class="prop">cuentaSolicitada</span><span class="pun">:</span> <span class="kw">true</span> <span class="pun">}</span>
+  <span class="pun">});</span>
+  <span class="kw">const</span> <span class="var">mesa</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">mesa</span><span class="pun">.</span><span class="fn">findUnique</span><span class="pun">({</span>
+    <span class="prop">where</span><span class="pun">:</span>  <span class="pun">{</span> <span class="prop">id</span><span class="pun">:</span> <span class="var">mesaId</span> <span class="pun">},</span>
+    <span class="prop">select</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">numero</span><span class="pun">:</span> <span class="kw">true</span> <span class="pun">}</span>
+  <span class="pun">});</span>
+  <span class="kw">this</span><span class="pun">.</span><span class="prop">server</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'cuenta_solicitada'</span><span class="pun">,</span> <span class="pun">{</span> <span class="var">mesaId</span><span class="pun">,</span> <span class="prop">numero</span><span class="pun">:</span> <span class="var">mesa</span><span class="op">?.</span><span class="prop">numero</span> <span class="pun">});</span>
+<span class="pun">}</span>
+
+<span class="dec">@SubscribeMessage</span><span class="pun">(</span><span class="str">'marcar_linea_kds'</span><span class="pun">)</span>
+<span class="kw">async</span> <span class="fn">handleMarcarLinea</span><span class="pun">(</span>
+  <span class="dec">@MessageBody</span><span class="pun">()</span> <span class="var">payload</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">pedidoId</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">;</span> <span class="prop">lineaId</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">;</span> <span class="prop">listo</span><span class="pun">:</span> <span class="cls">boolean</span> <span class="pun">}</span>
+<span class="pun">)</span> <span class="pun">{</span>
+  <span class="kw">const</span> <span class="var">pedidoActualizado</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">pedidosService</span>
+    <span class="pun">.</span><span class="fn">marcarLineaLista</span><span class="pun">(</span><span class="var">payload</span><span class="pun">.</span><span class="prop">pedidoId</span><span class="pun">,</span> <span class="var">payload</span><span class="pun">.</span><span class="prop">lineaId</span><span class="pun">,</span> <span class="var">payload</span><span class="pun">.</span><span class="prop">listo</span><span class="pun">);</span>
+  <span class="kw">this</span><span class="pun">.</span><span class="prop">server</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'pedido_actualizado'</span><span class="pun">,</span> <span class="var">pedidoActualizado</span><span class="pun">);</span>
+  <span class="cmt">// Notificación sonora en el terminal cuando el plato está listo</span>
+  <span class="kw">if</span> <span class="pun">(</span><span class="var">payload</span><span class="pun">.</span><span class="prop">listo</span> <span class="op">&amp;&amp;</span> <span class="var">pedidoActualizado</span><span class="pun">)</span> <span class="pun">{</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="prop">server</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'plato_listo_notificacion'</span><span class="pun">,</span> <span class="var">pedidoActualizado</span><span class="pun">.</span><span class="prop">mesaId</span><span class="pun">);</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       2. AUTENTICACIÓN
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="auth">
+    <div class="section-header">
+      <div class="section-icon green">🔐</div>
+      <div>
+        <div class="section-title">Autenticación JWT + bcrypt</div>
+        <div class="section-sub">back/src/auth/auth.service.ts &amp; auth.guard.ts</div>
+      </div>
+    </div>
+
+    <div class="explain green">
+      <p>El sistema de autenticación combina <strong>bcrypt</strong> para el hash de contraseñas y <strong>JWT</strong> para el control de sesiones sin estado. El flujo es: el usuario envía credenciales → se verifica la contraseña contra el hash en BD → se genera un token firmado con el <em>secret</em> del servidor. El token lleva embebidos el <code>id</code>, el <code>correo</code> y el <code>rol</code> del usuario, evitando consultas adicionales a BD en cada petición.</p>
+      <ul>
+        <li>La opción <strong>«Recuérdame»</strong> cambia la expiración del token de 24h a 7 días sin lógica adicional.</li>
+        <li>El <strong>AuthGuard</strong> extrae el token de la cabecera <code>Authorization: Bearer</code>, lo verifica y adjunta el payload a <code>request['usuario']</code> para que los controladores conozcan al usuario sin consultar BD.</li>
+        <li>Los usuarios desactivados (<code>activo: false</code>) son rechazados antes de verificar la contraseña.</li>
+      </ul>
+    </div>
+
+    <div class="grid2">
+      <div class="code-card">
+        <div class="code-card-header">
+          <div class="code-card-left">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="filename">auth.service.ts</span>
+          </div>
+          <span class="code-badge back">BACKEND</span>
+        </div>
+        <div class="code-body"><pre><span class="kw">async</span> <span class="fn">login</span><span class="pun">(</span>
+  <span class="var">correo</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">,</span>
+  <span class="var">contrasenaPlana</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">,</span>
+  <span class="var">recuerdame</span><span class="pun">:</span> <span class="cls">boolean</span> <span class="op">=</span> <span class="kw">false</span>
+<span class="pun">)</span> <span class="pun">{</span>
+  <span class="kw">const</span> <span class="var">usuario</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">usuario</span>
+    <span class="pun">.</span><span class="fn">findUnique</span><span class="pun">({</span> <span class="prop">where</span><span class="pun">:</span> <span class="pun">{</span> <span class="var">correo</span> <span class="pun">}</span> <span class="pun">});</span>
+
+  <span class="kw">if</span> <span class="pun">(!</span><span class="var">usuario</span><span class="pun">)</span>
+    <span class="kw">throw new</span> <span class="cls">UnauthorizedException</span><span class="pun">(</span><span class="str">'Credenciales incorrectas'</span><span class="pun">);</span>
+
+  <span class="kw">if</span> <span class="pun">(!</span><span class="var">usuario</span><span class="pun">.</span><span class="prop">activo</span><span class="pun">)</span>
+    <span class="kw">throw new</span> <span class="cls">UnauthorizedException</span><span class="pun">(</span><span class="str">'Usuario desactivado'</span><span class="pun">);</span>
+
+  <span class="kw">const</span> <span class="var">ok</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">bcrypt</span><span class="pun">.</span><span class="fn">compare</span><span class="pun">(</span>
+    <span class="var">contrasenaPlana</span><span class="pun">,</span> <span class="var">usuario</span><span class="pun">.</span><span class="prop">contrasena</span>
+  <span class="pun">);</span>
+  <span class="kw">if</span> <span class="pun">(!</span><span class="var">ok</span><span class="pun">)</span>
+    <span class="kw">throw new</span> <span class="cls">UnauthorizedException</span><span class="pun">(</span><span class="str">'Credenciales incorrectas'</span><span class="pun">);</span>
+
+  <span class="kw">const</span> <span class="var">payload</span> <span class="op">=</span> <span class="pun">{</span>
+    <span class="prop">sub</span><span class="pun">:</span>    <span class="var">usuario</span><span class="pun">.</span><span class="prop">id</span><span class="pun">,</span>
+    <span class="prop">correo</span><span class="pun">:</span> <span class="var">usuario</span><span class="pun">.</span><span class="prop">correo</span><span class="pun">,</span>
+    <span class="prop">rol</span><span class="pun">:</span>    <span class="var">usuario</span><span class="pun">.</span><span class="prop">rol</span>
+  <span class="pun">};</span>
+  <span class="kw">const</span> <span class="var">expiresIn</span> <span class="op">=</span> <span class="var">recuerdame</span> <span class="op">?</span> <span class="str">'7d'</span> <span class="op">:</span> <span class="str">'24h'</span><span class="pun">;</span>
+
+  <span class="kw">return</span> <span class="pun">{</span>
+    <span class="prop">access_token</span><span class="pun">:</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">jwtService</span>
+      <span class="pun">.</span><span class="fn">signAsync</span><span class="pun">(</span><span class="var">payload</span><span class="pun">,</span> <span class="pun">{</span> <span class="var">expiresIn</span> <span class="pun">}),</span>
+    <span class="prop">usuario</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">id</span><span class="pun">:</span> <span class="var">usuario</span><span class="pun">.</span><span class="prop">id</span><span class="pun">,</span> <span class="prop">nombre</span><span class="pun">:</span> <span class="var">usuario</span><span class="pun">.</span><span class="prop">nombre</span><span class="pun">,</span> <span class="prop">rol</span><span class="pun">:</span> <span class="var">usuario</span><span class="pun">.</span><span class="prop">rol</span> <span class="pun">}</span>
+  <span class="pun">};</span>
+<span class="pun">}</span></pre></div>
+      </div>
+
+      <div class="code-card">
+        <div class="code-card-header">
+          <div class="code-card-left">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="filename">auth.guard.ts</span>
+          </div>
+          <span class="code-badge back">BACKEND</span>
+        </div>
+        <div class="code-body"><pre><span class="dec">@Injectable</span><span class="pun">()</span>
+<span class="kw">export class</span> <span class="cls">AuthGuard</span> <span class="kw">implements</span> <span class="cls">CanActivate</span> <span class="pun">{</span>
+
+  <span class="kw">async</span> <span class="fn">canActivate</span><span class="pun">(</span>
+    <span class="var">context</span><span class="pun">:</span> <span class="cls">ExecutionContext</span>
+  <span class="pun">):</span> <span class="cls">Promise</span><span class="op">&lt;</span><span class="cls">boolean</span><span class="op">&gt;</span> <span class="pun">{</span>
+    <span class="kw">const</span> <span class="var">request</span> <span class="op">=</span> <span class="var">context</span>
+      <span class="pun">.</span><span class="fn">switchToHttp</span><span class="pun">().</span><span class="fn">getRequest</span><span class="pun">();</span>
+    <span class="kw">const</span> <span class="var">token</span> <span class="op">=</span>
+      <span class="kw">this</span><span class="pun">.</span><span class="fn">extraerTokenDeCabecera</span><span class="pun">(</span><span class="var">request</span><span class="pun">);</span>
+
+    <span class="kw">if</span> <span class="pun">(!</span><span class="var">token</span><span class="pun">)</span>
+      <span class="kw">throw new</span> <span class="cls">UnauthorizedException</span><span class="pun">();</span>
+
+    <span class="kw">try</span> <span class="pun">{</span>
+      <span class="kw">const</span> <span class="var">payload</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">jwtService</span>
+        <span class="pun">.</span><span class="fn">verifyAsync</span><span class="pun">(</span><span class="var">token</span><span class="pun">,</span> <span class="pun">{</span>
+          <span class="prop">secret</span><span class="pun">:</span> <span class="var">process</span><span class="pun">.</span><span class="prop">env</span><span class="pun">.</span><span class="prop">JWT_SECRET</span>
+        <span class="pun">});</span>
+      <span class="cmt">// El payload (id, correo, rol) queda</span>
+      <span class="cmt">// disponible en todos los controladores</span>
+      <span class="var">request</span><span class="pun">[</span><span class="str">'usuario'</span><span class="pun">]</span> <span class="op">=</span> <span class="var">payload</span><span class="pun">;</span>
+    <span class="pun">}</span> <span class="kw">catch</span> <span class="pun">{</span>
+      <span class="kw">throw new</span> <span class="cls">UnauthorizedException</span><span class="pun">(</span>
+        <span class="str">'Token inválido o expirado'</span>
+      <span class="pun">);</span>
+    <span class="pun">}</span>
+    <span class="kw">return</span> <span class="kw">true</span><span class="pun">;</span>
+  <span class="pun">}</span>
+
+  <span class="kw">private</span> <span class="fn">extraerTokenDeCabecera</span><span class="pun">(</span>
+    <span class="var">request</span><span class="pun">:</span> <span class="cls">Request</span>
+  <span class="pun">)</span> <span class="pun">{</span>
+    <span class="cmt">// Authorization: Bearer &lt;token&gt;</span>
+    <span class="kw">const</span> <span class="pun">[</span><span class="var">tipo</span><span class="pun">,</span> <span class="var">token</span><span class="pun">]</span> <span class="op">=</span>
+      <span class="var">request</span><span class="pun">.</span><span class="prop">headers</span><span class="pun">.</span><span class="prop">authorization</span>
+        <span class="op">?.</span><span class="fn">split</span><span class="pun">(</span><span class="str">' '</span><span class="pun">)</span> <span class="op">??</span> <span class="pun">[];</span>
+    <span class="kw">return</span> <span class="var">tipo</span> <span class="op">===</span> <span class="str">'Bearer'</span>
+      <span class="op">?</span> <span class="var">token</span> <span class="op">:</span> <span class="kw">undefined</span><span class="pun">;</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       3. PRISMA / PEDIDOS SERVICE
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="prisma">
+    <div class="section-header">
+      <div class="section-icon amber">🗄️</div>
+      <div>
+        <div class="section-title">Lógica de negocio con Prisma ORM</div>
+        <div class="section-sub">back/src/pedidos/pedidos.service.ts</div>
+      </div>
+    </div>
+
+    <div class="explain amber">
+      <p>El método <strong><code>crearOActualizarPedido</code></strong> implementa la lógica clave del sistema: una mesa siempre tiene como máximo <em>un pedido activo</em>. Si ya existe uno (en estado <code>PENDIENTE</code>, <code>EN_COCINA</code>, <code>LISTO</code> o <code>ENTREGADO</code>), las nuevas líneas se acumulan sobre él y el total se suma. Si no hay pedido activo, se crea uno nuevo. Este diseño permite que el cliente pida varias veces durante la misma visita sin abrir cuentas nuevas.</p>
+      <ul>
+        <li>Prisma permite crear líneas de pedido anidadas en la misma operación con <code>lineas: { create: datos.lineas }</code>, reduciendo las consultas a BD.</li>
+        <li>El <code>include</code> con relaciones anidadas devuelve el pedido completo en una sola query, listo para emitir vía WebSocket.</li>
+        <li>La mesa se actualiza a estado <code>ACTIVA</code> automáticamente al crear el primer pedido.</li>
+      </ul>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="code-card-left">
+          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="filename">pedidos.service.ts — crearOActualizarPedido()</span>
+        </div>
+        <span class="code-badge back">BACKEND</span>
+      </div>
+      <div class="code-body"><pre><span class="kw">async</span> <span class="fn">crearOActualizarPedido</span><span class="pun">(</span><span class="var">datos</span><span class="pun">:</span> <span class="pun">{</span>
+  <span class="prop">mesaId</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">;</span>
+  <span class="prop">sesionId</span><span class="op">?:</span> <span class="cls">string</span><span class="pun">;</span>
+  <span class="prop">lineas</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">productoId</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">;</span> <span class="prop">cantidad</span><span class="pun">:</span> <span class="cls">number</span><span class="pun">;</span>
+            <span class="prop">notas</span><span class="op">?:</span> <span class="cls">string</span><span class="pun">;</span> <span class="prop">precioUnitario</span><span class="pun">:</span> <span class="cls">number</span> <span class="pun">}[]</span>
+<span class="pun">})</span> <span class="pun">{</span>
+  <span class="kw">const</span> <span class="var">totalNuevo</span> <span class="op">=</span> <span class="var">datos</span><span class="pun">.</span><span class="prop">lineas</span><span class="pun">.</span><span class="fn">reduce</span><span class="pun">((</span><span class="var">acc</span><span class="pun">,</span> <span class="var">l</span><span class="pun">)</span> <span class="op">=&gt;</span>
+    <span class="var">acc</span> <span class="op">+</span> <span class="pun">(</span><span class="var">l</span><span class="pun">.</span><span class="prop">cantidad</span> <span class="op">*</span> <span class="var">l</span><span class="pun">.</span><span class="prop">precioUnitario</span><span class="pun">),</span> <span class="num">0</span><span class="pun">);</span>
+
+  <span class="cmt">// ¿Hay ya una cuenta abierta en esta mesa?</span>
+  <span class="kw">let</span> <span class="var">pedido</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">pedido</span><span class="pun">.</span><span class="fn">findFirst</span><span class="pun">({</span>
+    <span class="prop">where</span><span class="pun">:</span> <span class="pun">{</span>
+      <span class="prop">mesaId</span><span class="pun">:</span> <span class="var">datos</span><span class="pun">.</span><span class="prop">mesaId</span><span class="pun">,</span>
+      <span class="prop">estado</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">in</span><span class="pun">:</span> <span class="pun">[</span><span class="str">'PENDIENTE'</span><span class="pun">,</span><span class="str">'EN_COCINA'</span><span class="pun">,</span><span class="str">'LISTO'</span><span class="pun">,</span><span class="str">'ENTREGADO'</span><span class="pun">]</span> <span class="pun">}</span>
+    <span class="pun">}</span>
+  <span class="pun">});</span>
+
+  <span class="kw">if</span> <span class="pun">(</span><span class="var">pedido</span><span class="pun">)</span> <span class="pun">{</span>
+    <span class="cmt">// SÍ hay cuenta: acumulamos líneas y sumamos al total</span>
+    <span class="var">pedido</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">pedido</span><span class="pun">.</span><span class="fn">update</span><span class="pun">({</span>
+      <span class="prop">where</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">id</span><span class="pun">:</span> <span class="var">pedido</span><span class="pun">.</span><span class="prop">id</span> <span class="pun">},</span>
+      <span class="prop">data</span><span class="pun">:</span> <span class="pun">{</span>
+        <span class="prop">estado</span><span class="pun">:</span> <span class="str">'PENDIENTE'</span><span class="pun">,</span>
+        <span class="prop">total</span><span class="pun">:</span> <span class="cls">Number</span><span class="pun">(</span><span class="var">pedido</span><span class="pun">.</span><span class="prop">total</span><span class="pun">)</span> <span class="op">+</span> <span class="var">totalNuevo</span><span class="pun">,</span>
+        <span class="prop">lineas</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">create</span><span class="pun">:</span> <span class="var">datos</span><span class="pun">.</span><span class="prop">lineas</span> <span class="pun">}</span>
+      <span class="pun">},</span>
+      <span class="prop">include</span><span class="pun">:</span> <span class="pun">{</span>
+        <span class="prop">lineas</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">include</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">producto</span><span class="pun">:</span> <span class="kw">true</span> <span class="pun">}</span> <span class="pun">},</span>
+        <span class="prop">mesa</span><span class="pun">:</span> <span class="kw">true</span>
+      <span class="pun">}</span>
+    <span class="pun">});</span>
+  <span class="pun">}</span> <span class="kw">else</span> <span class="pun">{</span>
+    <span class="cmt">// NO hay cuenta: nuevo pedido</span>
+    <span class="var">pedido</span> <span class="op">=</span> <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">pedido</span><span class="pun">.</span><span class="fn">create</span><span class="pun">({</span>
+      <span class="prop">data</span><span class="pun">:</span> <span class="pun">{</span>
+        <span class="prop">mesaId</span><span class="pun">:</span>  <span class="var">datos</span><span class="pun">.</span><span class="prop">mesaId</span><span class="pun">,</span>
+        <span class="prop">sesionId</span><span class="pun">:</span> <span class="var">datos</span><span class="pun">.</span><span class="prop">sesionId</span><span class="pun">,</span>
+        <span class="prop">total</span><span class="pun">:</span>   <span class="var">totalNuevo</span><span class="pun">,</span>
+        <span class="prop">estado</span><span class="pun">:</span>  <span class="str">'PENDIENTE'</span><span class="pun">,</span>
+        <span class="prop">lineas</span><span class="pun">:</span>  <span class="pun">{</span> <span class="prop">create</span><span class="pun">:</span> <span class="var">datos</span><span class="pun">.</span><span class="prop">lineas</span> <span class="pun">}</span>
+      <span class="pun">},</span>
+      <span class="prop">include</span><span class="pun">:</span> <span class="pun">{</span>
+        <span class="prop">lineas</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">include</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">producto</span><span class="pun">:</span> <span class="kw">true</span> <span class="pun">}</span> <span class="pun">},</span>
+        <span class="prop">mesa</span><span class="pun">:</span> <span class="kw">true</span>
+      <span class="pun">}</span>
+    <span class="pun">});</span>
+  <span class="pun">}</span>
+
+  <span class="cmt">// La mesa pasa a estado ACTIVA automáticamente</span>
+  <span class="kw">await</span> <span class="kw">this</span><span class="pun">.</span><span class="prop">prisma</span><span class="pun">.</span><span class="prop">mesa</span><span class="pun">.</span><span class="fn">update</span><span class="pun">({</span>
+    <span class="prop">where</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">id</span><span class="pun">:</span> <span class="var">datos</span><span class="pun">.</span><span class="prop">mesaId</span> <span class="pun">},</span>
+    <span class="prop">data</span><span class="pun">:</span>  <span class="pun">{</span> <span class="prop">estado</span><span class="pun">:</span> <span class="str">'ACTIVA'</span> <span class="pun">}</span>
+  <span class="pun">});</span>
+  <span class="kw">return</span> <span class="var">pedido</span><span class="pun">;</span>
+<span class="pun">}</span></pre></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       4. SOCKET SERVICE (FRONTEND)
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="socket-front">
+    <div class="section-header">
+      <div class="section-icon purple">📡</div>
+      <div>
+        <div class="section-title">Socket Service — Angular</div>
+        <div class="section-sub">front/src/app/core/services/socket.ts</div>
+      </div>
+    </div>
+
+    <div class="explain purple">
+      <p>El <strong>SocketService</strong> encapsula toda la comunicación WebSocket del frontend. La clave del diseño es el uso de <strong><code>NgZone.run()</code></strong>: cuando Socket.IO emite un evento, el callback ocurre fuera de la zona de Angular (zona de detección de cambios), lo que impide que la UI se actualice automáticamente. Envolver cada callback en <code>zone.run()</code> garantiza que Angular detecte el cambio y re-renderice el componente.</p>
+      <ul>
+        <li>El método <code>escuchar()</code> devuelve un <strong>Observable</strong> de RxJS, lo que permite a los componentes suscribirse y combinar eventos con operadores reactivos.</li>
+        <li><code>emitirComanda()</code> usa una <strong>Promise</strong> con el patrón de acknowledgment de Socket.IO para esperar la confirmación del servidor antes de resolver.</li>
+        <li>El servicio se registra con <code>providedIn: 'root'</code>, por lo que existe una única instancia compartida por toda la aplicación.</li>
+      </ul>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="code-card-left">
+          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="filename">socket.ts</span>
+        </div>
+        <span class="code-badge front">FRONTEND</span>
+      </div>
+      <div class="code-body"><pre><span class="dec">@Injectable</span><span class="pun">({</span> <span class="prop">providedIn</span><span class="pun">:</span> <span class="str">'root'</span> <span class="pun">})</span>
+<span class="kw">export class</span> <span class="cls">SocketService</span> <span class="pun">{</span>
+  <span class="kw">private</span> <span class="var">socket</span><span class="pun">:</span> <span class="cls">Socket</span><span class="pun">;</span>
+  <span class="kw">private</span> <span class="var">zone</span> <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">NgZone</span><span class="pun">);</span>
+
+  <span class="fn">constructor</span><span class="pun">()</span> <span class="pun">{</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socket</span> <span class="op">=</span> <span class="fn">io</span><span class="pun">(</span><span class="str">'http://localhost:3000'</span><span class="pun">,</span> <span class="pun">{</span>
+      <span class="prop">transports</span><span class="pun">:</span> <span class="pun">[</span><span class="str">'websocket'</span><span class="pun">],</span>
+      <span class="prop">autoConnect</span><span class="pun">:</span> <span class="kw">true</span>
+    <span class="pun">});</span>
+  <span class="pun">}</span>
+
+  <span class="cmt">// Devuelve un Observable que Angular puede consumir reactivamente</span>
+  <span class="fn">escuchar</span><span class="pun">(</span><span class="var">nombreEvento</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">):</span> <span class="cls">Observable</span><span class="op">&lt;</span><span class="kw">any</span><span class="op">&gt;</span> <span class="pun">{</span>
+    <span class="kw">return new</span> <span class="cls">Observable</span><span class="pun">((</span><span class="var">observer</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+      <span class="kw">this</span><span class="pun">.</span><span class="var">socket</span><span class="pun">.</span><span class="fn">on</span><span class="pun">(</span><span class="var">nombreEvento</span><span class="pun">,</span> <span class="pun">(</span><span class="var">data</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+        <span class="cmt">// NgZone: fuerza a Angular a detectar el cambio</span>
+        <span class="kw">this</span><span class="pun">.</span><span class="var">zone</span><span class="pun">.</span><span class="fn">run</span><span class="pun">(()</span> <span class="op">=&gt;</span> <span class="var">observer</span><span class="pun">.</span><span class="fn">next</span><span class="pun">(</span><span class="var">data</span><span class="pun">));</span>
+      <span class="pun">});</span>
+      <span class="cmt">// Cleanup: se desuscribe al destruir el componente</span>
+      <span class="kw">return</span> <span class="pun">()</span> <span class="op">=&gt;</span> <span class="kw">this</span><span class="pun">.</span><span class="var">socket</span><span class="pun">.</span><span class="fn">off</span><span class="pun">(</span><span class="var">nombreEvento</span><span class="pun">);</span>
+    <span class="pun">});</span>
+  <span class="pun">}</span>
+
+  <span class="cmt">// Acknowledgment pattern: espera confirmación del servidor</span>
+  <span class="fn">emitirComanda</span><span class="pun">(</span><span class="var">datosPedido</span><span class="pun">:</span> <span class="kw">any</span><span class="pun">):</span> <span class="cls">Promise</span><span class="op">&lt;</span><span class="kw">any</span><span class="op">&gt;</span> <span class="pun">{</span>
+    <span class="kw">return new</span> <span class="cls">Promise</span><span class="pun">((</span><span class="var">resolve</span><span class="pun">,</span> <span class="var">reject</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+      <span class="kw">this</span><span class="pun">.</span><span class="var">socket</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'enviar_comanda'</span><span class="pun">,</span>
+        <span class="var">datosPedido</span><span class="pun">,</span> <span class="pun">(</span><span class="var">respuesta</span><span class="pun">:</span> <span class="kw">any</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+          <span class="kw">this</span><span class="pun">.</span><span class="var">zone</span><span class="pun">.</span><span class="fn">run</span><span class="pun">(()</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+            <span class="kw">if</span> <span class="pun">(</span><span class="var">respuesta</span><span class="pun">.</span><span class="prop">status</span> <span class="op">===</span> <span class="str">'ok'</span><span class="pun">)</span>
+              <span class="fn">resolve</span><span class="pun">(</span><span class="var">respuesta</span><span class="pun">.</span><span class="prop">pedido</span><span class="pun">);</span>
+            <span class="kw">else</span>
+              <span class="fn">reject</span><span class="pun">(</span><span class="var">respuesta</span><span class="pun">.</span><span class="prop">mensaje</span><span class="pun">);</span>
+          <span class="pun">});</span>
+        <span class="pun">});</span>
+    <span class="pun">});</span>
+  <span class="pun">}</span>
+
+  <span class="fn">emitir</span><span class="pun">(</span><span class="var">nombreEvento</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">,</span> <span class="var">datos</span><span class="pun">:</span> <span class="kw">any</span><span class="pun">)</span> <span class="pun">{</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socket</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="var">nombreEvento</span><span class="pun">,</span> <span class="var">datos</span><span class="pun">);</span>
+  <span class="pun">}</span>
+
+  <span class="fn">unirseASala</span><span class="pun">(</span><span class="var">nombreSala</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">)</span> <span class="pun">{</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socket</span><span class="pun">.</span><span class="fn">emit</span><span class="pun">(</span><span class="str">'unirse_sala'</span><span class="pun">,</span> <span class="var">nombreSala</span><span class="pun">);</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       5. GUARDS & RUTAS
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="guards">
+    <div class="section-header">
+      <div class="section-icon coral">🛡️</div>
+      <div>
+        <div class="section-title">Guards de ruta y control de roles</div>
+        <div class="section-sub">front/src/app/core/guards/ &amp; app.routes.ts</div>
+      </div>
+    </div>
+
+    <div class="explain coral">
+      <p>Angular protege las rutas con dos <strong>functional guards</strong>: <code>authGuard</code> comprueba que exista un token válido en el almacenamiento, y <code>rolGuard</code> verifica que el rol del usuario esté incluido en el array <code>roles</code> definido en <code>route.data</code>. Ambos guards pueden componerse en el array <code>canActivate</code> de cada ruta, ejecutándose en orden.</p>
+      <ul>
+        <li>Las rutas públicas (<code>/qr/:id</code>, <code>/menu</code>) no tienen guards y son accesibles sin autenticación.</li>
+        <li>El <code>rolGuard</code> usa el <strong>ModalNotificacionService</strong> para mostrar un mensaje de error antes de redirigir, en lugar de fallar silenciosamente.</li>
+        <li>El layout del dashboard (<code>DashboardLayout</code>) actúa como ruta padre que aplica <code>authGuard</code> a todas sus rutas hijo de una sola vez.</li>
+      </ul>
+    </div>
+
+    <div class="grid2">
+      <div class="code-card">
+        <div class="code-card-header">
+          <div class="code-card-left">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="filename">auth-guard.ts + rol-guard.ts</span>
+          </div>
+          <span class="code-badge front">FRONTEND</span>
+        </div>
+        <div class="code-body"><pre><span class="cmt">// authGuard — requiere token válido</span>
+<span class="kw">export const</span> <span class="var">authGuard</span><span class="pun">:</span> <span class="cls">CanActivateFn</span> <span class="op">=</span>
+  <span class="pun">(</span><span class="var">route</span><span class="pun">,</span> <span class="var">state</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+    <span class="kw">const</span> <span class="var">auth</span>   <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">AuthService</span><span class="pun">);</span>
+    <span class="kw">const</span> <span class="var">router</span> <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">Router</span><span class="pun">);</span>
+
+    <span class="kw">if</span> <span class="pun">(</span><span class="var">auth</span><span class="pun">.</span><span class="fn">obtenerToken</span><span class="pun">())</span> <span class="kw">return</span> <span class="kw">true</span><span class="pun">;</span>
+
+    <span class="var">router</span><span class="pun">.</span><span class="fn">navigate</span><span class="pun">([</span><span class="str">'/login'</span><span class="pun">]);</span>
+    <span class="kw">return</span> <span class="kw">false</span><span class="pun">;</span>
+  <span class="pun">};</span>
+
+<span class="cmt">// rolGuard — verifica rol del usuario</span>
+<span class="kw">export const</span> <span class="var">rolGuard</span><span class="pun">:</span> <span class="cls">CanActivateFn</span> <span class="op">=</span>
+  <span class="pun">(</span><span class="var">route</span><span class="pun">,</span> <span class="var">state</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+    <span class="kw">const</span> <span class="var">auth</span>    <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">AuthService</span><span class="pun">);</span>
+    <span class="kw">const</span> <span class="var">router</span>  <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">Router</span><span class="pun">);</span>
+    <span class="kw">const</span> <span class="var">modal</span>   <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">ModalNotificacionService</span><span class="pun">);</span>
+
+    <span class="kw">const</span> <span class="var">roles</span>   <span class="op">=</span> <span class="var">route</span><span class="pun">.</span><span class="prop">data</span><span class="pun">[</span><span class="str">'roles'</span><span class="pun">]</span> <span class="kw">as</span> <span class="cls">string</span><span class="pun">[];</span>
+    <span class="kw">const</span> <span class="var">usuario</span> <span class="op">=</span> <span class="var">auth</span><span class="pun">.</span><span class="fn">obtenerUsuarioActual</span><span class="pun">();</span>
+
+    <span class="kw">if</span> <span class="pun">(</span><span class="var">usuario</span> <span class="op">&amp;&amp;</span> <span class="var">roles</span><span class="pun">.</span><span class="fn">includes</span><span class="pun">(</span><span class="var">usuario</span><span class="pun">.</span><span class="prop">rol</span><span class="pun">))</span>
+      <span class="kw">return</span> <span class="kw">true</span><span class="pun">;</span>
+
+    <span class="var">modal</span><span class="pun">.</span><span class="fn">mostrarError</span><span class="pun">(</span>
+      <span class="str">'Tu rol no tiene permisos para esta sección.'</span>
+    <span class="pun">);</span>
+    <span class="var">router</span><span class="pun">.</span><span class="fn">navigate</span><span class="pun">([</span><span class="str">'/dashboard'</span><span class="pun">]);</span>
+    <span class="kw">return</span> <span class="kw">false</span><span class="pun">;</span>
+  <span class="pun">};</span></pre></div>
+      </div>
+
+      <div class="code-card">
+        <div class="code-card-header">
+          <div class="code-card-left">
+            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+            <span class="filename">app.routes.ts — Estructura de rutas</span>
+          </div>
+          <span class="code-badge front">FRONTEND</span>
+        </div>
+        <div class="code-body"><pre><span class="kw">export const</span> <span class="var">routes</span><span class="pun">:</span> <span class="cls">Routes</span> <span class="op">=</span> <span class="pun">[</span>
+  <span class="pun">{</span> <span class="prop">path</span><span class="pun">:</span> <span class="str">'login'</span><span class="pun">,</span> <span class="prop">component</span><span class="pun">:</span> <span class="cls">LoginComponent</span> <span class="pun">},</span>
+  <span class="pun">{</span>
+    <span class="prop">path</span><span class="pun">:</span> <span class="str">''</span><span class="pun">,</span>
+    <span class="prop">component</span><span class="pun">:</span> <span class="cls">DashboardLayout</span><span class="pun">,</span>
+    <span class="prop">canActivate</span><span class="pun">:</span> <span class="pun">[</span><span class="var">authGuard</span><span class="pun">],</span> <span class="cmt">// protege todas las hijas</span>
+    <span class="prop">children</span><span class="pun">:</span> <span class="pun">[</span>
+      <span class="pun">{</span> <span class="prop">path</span><span class="pun">:</span> <span class="str">'dashboard'</span><span class="pun">,</span> <span class="prop">component</span><span class="pun">:</span> <span class="cls">Inicio</span> <span class="pun">},</span>
+      <span class="pun">{</span>
+        <span class="prop">path</span><span class="pun">:</span> <span class="str">'mesas'</span><span class="pun">,</span> <span class="prop">component</span><span class="pun">:</span> <span class="cls">Mesas</span><span class="pun">,</span>
+        <span class="prop">canActivate</span><span class="pun">:</span> <span class="pun">[</span><span class="var">rolGuard</span><span class="pun">],</span>
+        <span class="prop">data</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">roles</span><span class="pun">:</span> <span class="pun">[</span><span class="str">'ADMINISTRADOR'</span><span class="pun">,</span><span class="str">'JEFE'</span><span class="pun">,</span><span class="str">'EMPLEADO'</span><span class="pun">]</span> <span class="pun">}</span>
+      <span class="pun">},</span>
+      <span class="pun">{</span>
+        <span class="prop">path</span><span class="pun">:</span> <span class="str">'carta'</span><span class="pun">,</span> <span class="prop">component</span><span class="pun">:</span> <span class="cls">Carta</span><span class="pun">,</span>
+        <span class="prop">canActivate</span><span class="pun">:</span> <span class="pun">[</span><span class="var">rolGuard</span><span class="pun">],</span>
+        <span class="prop">data</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">roles</span><span class="pun">:</span> <span class="pun">[</span><span class="str">'ADMINISTRADOR'</span><span class="pun">,</span><span class="str">'JEFE'</span><span class="pun">]</span> <span class="pun">}</span>
+      <span class="pun">},</span>
+      <span class="pun">{</span>
+        <span class="prop">path</span><span class="pun">:</span> <span class="str">'reportes'</span><span class="pun">,</span> <span class="prop">component</span><span class="pun">:</span> <span class="cls">Reportes</span><span class="pun">,</span>
+        <span class="prop">canActivate</span><span class="pun">:</span> <span class="pun">[</span><span class="var">rolGuard</span><span class="pun">],</span>
+        <span class="prop">data</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">roles</span><span class="pun">:</span> <span class="pun">[</span><span class="str">'ADMINISTRADOR'</span><span class="pun">]</span> <span class="pun">}</span>
+      <span class="pun">},</span>
+      <span class="pun">{</span>
+        <span class="prop">path</span><span class="pun">:</span> <span class="str">'configuracion'</span><span class="pun">,</span>
+        <span class="prop">canActivate</span><span class="pun">:</span> <span class="pun">[</span><span class="var">rolGuard</span><span class="pun">],</span>
+        <span class="prop">data</span><span class="pun">:</span> <span class="pun">{</span> <span class="prop">roles</span><span class="pun">:</span> <span class="pun">[</span><span class="str">'ADMINISTRADOR'</span><span class="pun">]</span> <span class="pun">}</span>
+      <span class="pun">},</span>
+    <span class="pun">]</span>
+  <span class="pun">},</span>
+  <span class="cmt">// Rutas públicas sin autenticación</span>
+  <span class="pun">{</span> <span class="prop">path</span><span class="pun">:</span> <span class="str">'qr/:id'</span><span class="pun">,</span> <span class="prop">component</span><span class="pun">:</span> <span class="cls">QrRedirect</span> <span class="pun">},</span>
+  <span class="pun">{</span> <span class="prop">path</span><span class="pun">:</span> <span class="str">'menu'</span><span class="pun">,</span>  <span class="prop">component</span><span class="pun">:</span> <span class="cls">MenuCliente</span> <span class="pun">},</span>
+  <span class="pun">{</span> <span class="prop">path</span><span class="pun">:</span> <span class="str">'**'</span><span class="pun">,</span>   <span class="prop">redirectTo</span><span class="pun">:</span> <span class="str">'login'</span> <span class="pun">}</span>
+<span class="pun">];</span></pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       6. INTERCEPTOR HTTP
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="interceptor">
+    <div class="section-header">
+      <div class="section-icon amber">🔗</div>
+      <div>
+        <div class="section-title">Interceptor HTTP — Inyección automática del token</div>
+        <div class="section-sub">front/src/app/core/guards/auth.interceptor.ts</div>
+      </div>
+    </div>
+
+    <div class="explain amber">
+      <p>El <strong>authInterceptor</strong> intercepta <em>todas</em> las peticiones HTTP que Angular realiza y les añade automáticamente la cabecera <code>Authorization: Bearer &lt;token&gt;</code>. Esto evita tener que añadir el token manualmente en cada llamada a la API. Además, escucha las respuestas <code>401 Unauthorized</code> del servidor para cerrar la sesión y redirigir al login cuando el token haya expirado, excepto en la zona pública del cliente (<code>/menu</code>).</p>
+      <ul>
+        <li>Usa el patrón <strong>clone</strong>: las peticiones HTTP de Angular son inmutables, por lo que se crea una copia modificada (<code>req.clone()</code>) con la cabecera añadida.</li>
+        <li>El operador <code>catchError</code> de RxJS permite capturar errores HTTP y reaccionar a ellos sin romper el flujo de la aplicación.</li>
+      </ul>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="code-card-left">
+          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="filename">auth.interceptor.ts</span>
+        </div>
+        <span class="code-badge front">FRONTEND</span>
+      </div>
+      <div class="code-body"><pre><span class="kw">export const</span> <span class="var">authInterceptor</span><span class="pun">:</span> <span class="cls">HttpInterceptorFn</span> <span class="op">=</span>
+  <span class="pun">(</span><span class="var">req</span><span class="pun">,</span> <span class="var">next</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+    <span class="kw">const</span> <span class="var">authService</span> <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">AuthService</span><span class="pun">);</span>
+    <span class="kw">const</span> <span class="var">router</span>      <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">Router</span><span class="pun">);</span>
+
+    <span class="kw">const</span> <span class="var">token</span> <span class="op">=</span> <span class="var">authService</span><span class="pun">.</span><span class="fn">obtenerToken</span><span class="pun">();</span>
+
+    <span class="cmt">// Clonar la petición y añadir la cabecera</span>
+    <span class="kw">const</span> <span class="var">peticionClonada</span> <span class="op">=</span> <span class="var">token</span>
+      <span class="op">?</span> <span class="var">req</span><span class="pun">.</span><span class="fn">clone</span><span class="pun">({</span>
+          <span class="prop">setHeaders</span><span class="pun">:</span> <span class="pun">{</span>
+            <span class="cls">Authorization</span><span class="pun">:</span> <span class="str">`Bearer <span class="pun">${</span><span class="var">token</span><span class="pun">}</span>`</span>
+          <span class="pun">}</span>
+        <span class="pun">})</span>
+      <span class="op">:</span> <span class="var">req</span><span class="pun">;</span>
+
+    <span class="kw">return</span> <span class="fn">next</span><span class="pun">(</span><span class="var">peticionClonada</span><span class="pun">).</span><span class="fn">pipe</span><span class="pun">(</span>
+      <span class="fn">catchError</span><span class="pun">((</span><span class="var">error</span><span class="pun">:</span> <span class="cls">HttpErrorResponse</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+        <span class="kw">const</span> <span class="var">esZonaCliente</span> <span class="op">=</span>
+          <span class="var">router</span><span class="pun">.</span><span class="prop">url</span><span class="pun">.</span><span class="fn">includes</span><span class="pun">(</span><span class="str">'/menu'</span><span class="pun">);</span>
+
+        <span class="cmt">// 401 fuera del área pública → logout + login</span>
+        <span class="kw">if</span> <span class="pun">(</span><span class="var">error</span><span class="pun">.</span><span class="prop">status</span> <span class="op">===</span> <span class="num">401</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="var">esZonaCliente</span><span class="pun">)</span> <span class="pun">{</span>
+          <span class="var">authService</span><span class="pun">.</span><span class="fn">logout</span><span class="pun">();</span>
+          <span class="var">router</span><span class="pun">.</span><span class="fn">navigate</span><span class="pun">([</span><span class="str">'/login'</span><span class="pun">]);</span>
+        <span class="pun">}</span>
+        <span class="kw">return</span> <span class="fn">throwError</span><span class="pun">(()</span> <span class="op">=&gt;</span> <span class="var">error</span><span class="pun">);</span>
+      <span class="pun">})</span>
+    <span class="pun">);</span>
+  <span class="pun">};</span></pre></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       7. MESAS COMPONENT — Suscripción WebSocket
+  ══════════════════════════════════════════════ -->
+  <section class="section reveal" id="mesas">
+    <div class="section-header">
+      <div class="section-icon green">🍽️</div>
+      <div>
+        <div class="section-title">Componente Mesas — Tiempo real en Angular</div>
+        <div class="section-sub">front/src/app/features/dashboard/mesas/mesas.ts</div>
+      </div>
+    </div>
+
+    <div class="explain green">
+      <p>El componente <strong>Mesas</strong> es el más complejo del frontend. En su <code>ngOnInit</code> se suscribe a múltiples eventos WebSocket simultáneamente para mantener la vista siempre sincronizada. La estrategia elegida para manejar la consistencia es <strong>conservadora</strong>: ante cualquier evento de cambio, en lugar de intentar fusionar el estado local con el dato nuevo, el componente recarga directamente los datos del servidor, garantizando que nunca haya desincronizaciones.</p>
+      <ul>
+        <li>La suscripción a <code>pedido_actualizado</code> actualiza la mesa afectada en el array local sin recargar todo.</li>
+        <li>La suscripción a <code>mesas_actualizadas</code> recarga la lista completa de mesas desde el servidor.</li>
+        <li>El componente usa <strong>inyección de dependencias con <code>inject()</code></strong> en lugar del constructor, patrón moderno de Angular 14+.</li>
+      </ul>
+    </div>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="code-card-left">
+          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="filename">mesas.ts — ngOnInit y suscripciones WebSocket</span>
+        </div>
+        <span class="code-badge front">FRONTEND</span>
+      </div>
+      <div class="code-body"><pre><span class="dec">@Component</span><span class="pun">({</span>
+  <span class="prop">selector</span><span class="pun">:</span> <span class="str">'app-mesas'</span><span class="pun">,</span>
+  <span class="prop">standalone</span><span class="pun">:</span> <span class="kw">true</span><span class="pun">,</span>
+  <span class="prop">imports</span><span class="pun">:</span> <span class="pun">[</span><span class="cls">CommonModule</span><span class="pun">,</span> <span class="cls">QRCodeComponent</span><span class="pun">,</span> <span class="cls">FormsModule</span><span class="pun">,</span> <span class="cls">TranslateModule</span><span class="pun">],</span>
+  <span class="prop">templateUrl</span><span class="pun">:</span> <span class="str">'./mesas.html'</span><span class="pun">,</span>
+<span class="pun">})</span>
+<span class="kw">export class</span> <span class="cls">Mesas</span> <span class="kw">implements</span> <span class="cls">OnInit</span> <span class="pun">{</span>
+  <span class="kw">private</span> <span class="var">socketService</span> <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">SocketService</span><span class="pun">);</span>
+  <span class="kw">private</span> <span class="var">mesaService</span>   <span class="op">=</span> <span class="fn">inject</span><span class="pun">(</span><span class="cls">MesaService</span><span class="pun">);</span>
+  <span class="cmt">// ... otros servicios inyectados</span>
+
+  <span class="var">mesas</span><span class="pun">:</span> <span class="kw">any</span><span class="pun">[]</span> <span class="op">=</span> <span class="pun">[];</span>
+  <span class="var">rolUsuario</span><span class="pun">:</span> <span class="cls">string</span> <span class="op">=</span> <span class="str">''</span><span class="pun">;</span>
+
+  <span class="fn">ngOnInit</span><span class="pun">()</span> <span class="pun">{</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="fn">cargarMesas</span><span class="pun">();</span>
+
+    <span class="cmt">// Cuando cambia un pedido: actualizar esa mesa en local</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socketService</span>
+      <span class="pun">.</span><span class="fn">escuchar</span><span class="pun">(</span><span class="str">'pedido_actualizado'</span><span class="pun">)</span>
+      <span class="pun">.</span><span class="fn">subscribe</span><span class="pun">((</span><span class="var">pedido</span><span class="pun">:</span> <span class="kw">any</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+        <span class="kw">if</span> <span class="pun">(!</span><span class="var">pedido</span><span class="pun">)</span> <span class="kw">return</span><span class="pun">;</span>
+        <span class="kw">const</span> <span class="var">i</span> <span class="op">=</span> <span class="kw">this</span><span class="pun">.</span><span class="var">mesas</span>
+          <span class="pun">.</span><span class="fn">findIndex</span><span class="pun">(</span><span class="var">m</span> <span class="op">=&gt;</span> <span class="var">m</span><span class="pun">.</span><span class="prop">id</span> <span class="op">===</span> <span class="var">pedido</span><span class="pun">.</span><span class="prop">mesaId</span><span class="pun">);</span>
+        <span class="kw">if</span> <span class="pun">(</span><span class="var">i</span> <span class="op">!==</span> <span class="op">-</span><span class="num">1</span><span class="pun">)</span>
+          <span class="kw">this</span><span class="pun">.</span><span class="var">mesas</span><span class="pun">[</span><span class="var">i</span><span class="pun">].</span><span class="prop">pedidoActivo</span> <span class="op">=</span> <span class="var">pedido</span><span class="pun">;</span>
+      <span class="pun">});</span>
+
+    <span class="cmt">// Cuando cambia el estado de la sala: recargar todo</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socketService</span>
+      <span class="pun">.</span><span class="fn">escuchar</span><span class="pun">(</span><span class="str">'mesas_actualizadas'</span><span class="pun">)</span>
+      <span class="pun">.</span><span class="fn">subscribe</span><span class="pun">(()</span> <span class="op">=&gt;</span> <span class="kw">this</span><span class="pun">.</span><span class="fn">cargarMesas</span><span class="pun">());</span>
+
+    <span class="cmt">// Cuando se cierra una cuenta: limpiar estado local</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socketService</span>
+      <span class="pun">.</span><span class="fn">escuchar</span><span class="pun">(</span><span class="str">'cuenta_cerrada'</span><span class="pun">)</span>
+      <span class="pun">.</span><span class="fn">subscribe</span><span class="pun">((</span><span class="var">mesaId</span><span class="pun">:</span> <span class="cls">string</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+        <span class="kw">const</span> <span class="var">mesa</span> <span class="op">=</span> <span class="kw">this</span><span class="pun">.</span><span class="var">mesas</span>
+          <span class="pun">.</span><span class="fn">find</span><span class="pun">(</span><span class="var">m</span> <span class="op">=&gt;</span> <span class="var">m</span><span class="pun">.</span><span class="prop">id</span> <span class="op">===</span> <span class="var">mesaId</span><span class="pun">);</span>
+        <span class="kw">if</span> <span class="pun">(</span><span class="var">mesa</span><span class="pun">)</span> <span class="var">mesa</span><span class="pun">.</span><span class="prop">pedidoActivo</span> <span class="op">=</span> <span class="kw">null</span><span class="pun">;</span>
+        <span class="kw">this</span><span class="pun">.</span><span class="fn">cargarMesas</span><span class="pun">();</span>
+      <span class="pun">});</span>
+
+    <span class="cmt">// Cuando el cliente solicita la cuenta: activar aviso visual</span>
+    <span class="kw">this</span><span class="pun">.</span><span class="var">socketService</span>
+      <span class="pun">.</span><span class="fn">escuchar</span><span class="pun">(</span><span class="str">'cuenta_solicitada'</span><span class="pun">)</span>
+      <span class="pun">.</span><span class="fn">subscribe</span><span class="pun">((</span><span class="var">payload</span><span class="pun">:</span> <span class="kw">any</span><span class="pun">)</span> <span class="op">=&gt;</span> <span class="pun">{</span>
+        <span class="kw">const</span> <span class="var">mesa</span> <span class="op">=</span> <span class="kw">this</span><span class="pun">.</span><span class="var">mesas</span>
+          <span class="pun">.</span><span class="fn">find</span><span class="pun">(</span><span class="var">m</span> <span class="op">=&gt;</span> <span class="var">m</span><span class="pun">.</span><span class="prop">id</span> <span class="op">===</span> <span class="var">payload</span><span class="pun">.</span><span class="prop">mesaId</span><span class="pun">);</span>
+        <span class="kw">if</span> <span class="pun">(</span><span class="var">mesa</span><span class="pun">)</span>
+          <span class="var">mesa</span><span class="pun">.</span><span class="prop">cuentaSolicitada</span> <span class="op">=</span> <span class="kw">true</span><span class="pun">;</span>
+      <span class="pun">});</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>jPOS · Proyecto Fin de Grado · DAM 2º Curso ·
+    <a href="https://github.com/jdelsan275/jPOS" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    }),
+    { threshold: 0.07 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Nav active link
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>
