@@ -4,15 +4,9 @@
 
 **Aplicación web fullstack para la gestión integral de establecimientos de hostelería**
 
-[
-[
-[
-[
-[
-
-> Proyecto de Fin de Grado — Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Multiplataforma (2G Curso)
+> Proyecto de Fin de Grado — Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones Multiplataforma (2º Curso)
 >
-> **Autor:** Jesús DS · **Tutor:** Delgado Sánchez
+> **Autor:** Jesús Delgado Sánchez
 
 </div>
 
